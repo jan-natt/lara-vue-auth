@@ -42,21 +42,15 @@ class CreateNewUser implements CreatesNewUsers
     'email' => $input['email'],
     'password' => Hash::make($input['password']),
     'role' => $input['role'],
-    'profile_photo_path' => $photopath,
+    'profile_photo_path' => $photoPath,
     ], now()->addMinutes(10));
 
-    return new User();
+    // Store email in session
+    session(['otp_email' => $input['email']]);
 
-    $user = User::create([
-        'name' => $input['name'],
-        'email' => $input['email'],
-        'password' => Hash::make($input['password']),
-        'role' => $input['role'],
-        'profile_photo_path' => $photoPath,
-        'email_verified_at' => null,
-    ]);
+    // 🔁 Redirect to OTP verify route
+    redirect()->route('verifyotp')->send();
 
-    return $user;
 }
 
 

@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Auth\OtpVerificationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,6 +37,10 @@ Route::middleware([
     })->name('dashboard');
 });
 
+Route::get('/verify-otp', function () {
+    return Inertia::render('Auth/VerifyOtp');
+})->name('verifyotp');
+
 Route::post('/verify-otp', function (Request $request) {
     $request->validate([
         'email' => 'required|email',
@@ -46,7 +51,7 @@ Route::post('/verify-otp', function (Request $request) {
     $userData = cache('pending_user_' . $request->email);
 
     if (!$cachedOtp || !$userData) {
-        return response()->json(['message' => 'OTP expired or invalid.'], 400);
+        return Inertia::render('Auth/Login');
     }
 
     if ($cachedOtp != $request->otp) {
@@ -68,4 +73,4 @@ Route::post('/verify-otp', function (Request $request) {
     cache()->forget('pending_user_' . $request->email);
 
     return response()->json(['message' => 'Email verified successfully!'], 200);
-})->name('verify-otp');
+})->name('verify-otp.post');

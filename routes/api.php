@@ -23,7 +23,7 @@ Route::middleware(['auth:sanctum', 'role:admin'
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', fn(Request $r) => $r->user());
-    Route::post('/user/update', [profileController::class, 'update']);
+Route::post('/user/update', [ProfileController::class, 'update']);
 
 });
 
